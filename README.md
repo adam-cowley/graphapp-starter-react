@@ -1,44 +1,87 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Graph App Starter - React
 
-## Available Scripts
+<div style="text-align:center">
+<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/neo4j.png" height="100">
+<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/arrow.svg" height="100">
+<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/react.png" height="100">
+</div>
 
-In the project directory, you can run:
 
-### `yarn start`
+This repository is your starter kit for [building a Graph App](https://neo4j.com/developer/graph-apps/building-a-graph-app/) for [Neo4j Desktop](https://neo4j.com/download/).  Feel free to fork this project.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting Started
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+The repository uses the [`use-neo4j` hooks](https://github.com/adam-cowley/use-neo4j) to communicate with Neo4j using [Cypher Statements](https://neo4j.com/developer/cypher/).  This is a package intended to speed up the development by reducing the amount of boilerplate code required.  It is not intended for public-facing/production applications used by external users.
 
-### `yarn test`
+### Provider
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The `Neo4jProvider` is included in in `src/index.ts` and is used to wrap the app.  When you first run the app, you will be presented with a login form which is used to create a driver within the `Neo4jContext`.  This context (exported from `use-neo4j`) can then be used to obtain the driver instance.
 
-### `yarn build`
+You can default the scheme, host, port, username, password or database
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Alternatively you can pass a driver instance to the `Neo4jProvider` if you know the Neo4j credentials up front.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```tsx
+import { Neo4jProvider, createDriver } from 'use-neo4j'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const driver = createDriver('neo4j', 'localhost', 7687, 'neo4j', 'letmein')
 
-### `yarn eject`
+ReactDOM.render(
+  <React.StrictMode>
+    <Neo4jProvider driver={driver}>
+      <App />
+    </Neo4jProvider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Querying Neo4j
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+`use-neo4j` provides `useReadCypher` and `useWriteCypher` hooks for querying Neo4j.  Both hooks return a `Neo4jResultState` which provides helpers for accessing the query state and results.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```ts
+useReadCypher(cypher: string, params?: Record<string, any>, database?: string): Neo4jResultState
+```
 
-## Learn More
+Example code:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```tsx
+function MyComponent() {
+    const query = `MATCH (m:Movie {title: $title}) RETURN m`
+    const params = { title: 'The Matrix' }
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    const { loading, first } = useReadCypher(query, params)
+
+    if ( loading ) return (<div>Loading...</div>)
+
+    // Get `m` from the first row
+    const movie = first.get('m')
+
+    return (
+        <div>{movie.properties.title} was released in {movie.properties.year}</div>
+    )
+}
+```
+
+For more information, [check the `use-neo4j` README](https://github.com/adam-cowley/use-neo4j).
+
+
+## Testing Your Graph App
+
+To test your Graph App, open up Neo4j Desktop and navigate to the **Application Settings** tab.  Under *Developer Tools*, check *Enable development mode*, enter `http://localhost:3000` (or the URL to this app from `yarn start`) into the Entry Point and `/` into the Root Path.
+
+Next, open the *Action Bar* using Ctrl+K on Windows/Linux or CMD+K on a Mac and start to type `Development App` - hit enter when **Open Development App** is highlighted.
+
+
+## Building your Graph App
+
+To build your Graph App, use the `yarn build` command.  This will generate a `dist/` folder with the built assets.  Running `npm pack` will generate a `.tgz` file which can be dragged into the Install form at the bottom of the **Graph Apps** pane.
+
+
+## Releasing your Graph App
+
+You can publish your Graph App to `npm` or share the `.tgz` file with your colleagues.
+
+[Let us know about your app on the Neo4j Community Site](https://community.neo4j.com/c/neo4j-graph-platform/graph-apps/95) or if you would like a link added to [The Graph App Gallery](https://install.graphapp.io/).
