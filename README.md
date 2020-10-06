@@ -1,9 +1,9 @@
 # Graph App Starter - React
 
 <div style="text-align:center">
-<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/neo4j.png" height="100">
-<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/arrow.svg" height="100">
 <img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/react.png" height="100">
+<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/arrow.svg" height="100">
+<img src="https://github.com/adam-cowley/use-neo4j/raw/main/img/neo4j.png" height="100">
 </div>
 
 
@@ -11,7 +11,7 @@ This repository is your starter kit for [building a Graph App](https://neo4j.com
 
 ## Getting Started
 
-The repository uses the [`use-neo4j` hooks](https://github.com/adam-cowley/use-neo4j) to communicate with Neo4j using [Cypher Statements](https://neo4j.com/developer/cypher/).  This is a package intended to speed up the development by reducing the amount of boilerplate code required.  It is not intended for public-facing/production applications used by external users.
+The repository uses the [`use-neo4j` hooks](https://github.com/adam-cowley/use-neo4j) to communicate with Neo4j using [Cypher Statements](https://neo4j.com/developer/cypher/).  This is a package intended to speed up the development by reducing the amount of boilerplate code required.  **It is not intended for public-facing/production applications used by external users.**
 
 ### Provider
 
